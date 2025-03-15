@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>seize the day 一日一生(生まれてからの日数と平均寿命計算)</title>
+    <style>
+/* ============================== */
+/*       モバイルファースト設計   */
+/* ============================== */
+
+/* ============================== */
+/*           リセット           */
+/* ============================== */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* ============================== */
+/*        基本テキストスタイル    */
+/* ============================== */
+h1 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 4px rgb(0, 0, 0);
+    margin-bottom: 20px;
+}
+
+p, label {
+    font-size: 1rem;
+    color: #ffffff;
+    text-shadow: 1px 1px 1px rgb(85, 85, 85);
+    margin-bottom: 20px;
+}
+
+label {
+    margin-bottom: 5px;
+    display: block;
+    white-space: nowrap;
+}
+
+/* ============================== */
+/*         フォーム入力エリア       */
+/* ============================== */
+input[type="text"],
+input[type="date"],
+input[type="radio"] {
+    margin: 10px 0 20px;
+    padding: 12px;
+    width: 90%;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+    border-color: #7e45e1;
+}
+
+input[type="radio"] {
+    width: auto;
+    margin-left: 20px;
+}
+
+.radio-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    transform: scale(1.2);
+    align-items: baseline;
+    padding: 0 60px;
+}
+
+/* ============================== */
+/*         ボタンデザイン         */
+/* ============================== */
+button {
+    background: linear-gradient(135deg, #7e45e1, #4e92e0);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.8);
+    color: white;
+    font-size: 1rem;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #7e45e1, #7e45e1);
+    box-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* ============================== */
+/*        背景設定・レイアウト      */
+/* ============================== */
+body {
+    background-image: url(bg.gif);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+}
+
+#gradient {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.card {
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 1px 2px 10px rgba(250, 250, 250, 0.5);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#resultcard {
+    color: #f7f7f7;
+    background: linear-gradient(135deg, #4e92e0, #7e45e1);
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height: auto;
+    border-radius: 16px;
+    opacity: 0.9;
+}
+
+/* ============================== */
+/*        結果表示のテキスト       */
+/* ============================== */
+.result-text {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-top: 20px;
+
+}
+
+
+
+/* ============================== */
+/*        デスクトップ対応        */
+/* ============================== */
+@media (min-width: 601px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    button {
+        font-size: 1.2rem;
+        padding: 15px 30px;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="radio"] {
+        width: 100%;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+    <div id="gradient">
+        <div class="card">
+            <h1>Seize the Day</h1>
+            <p>-生まれてからの日数と記念日・寿命計算-</p>
+            <hr><br>
+            <p>あなたの情報を入力してください</p>
+
+            <input type="text" id="userName" placeholder="お名前・ニックネーム">
+
+            <input type="date" id="birthDate">
+
+
+            <div class="radio-buttons">
+                <label>性別：</label> <input type="radio" id="male" name="gender" value="male">
+                <label for="male">男性</label>
+                <input type="radio" id="female" name="gender" value="female">
+                <label for="female">女性</label>
+            </div>
+            <p> 2023年日本人の平均寿命は<br>男性が81.09歳、女性が87.14歳</p>
+
+            <button onclick="calculateDays()">計算</button>
+
+            <div id="resultcard">
+                <h3>-Result- </h3>
+                <h3 id="birthdayMessage" class="result-text"></h3>
+                <h3 id="result" class="result-text"></h3>
+                <h3 id="nextBirthday" class="result-text"></h3>
+                <h3 id="nextMilestone" class="result-text"></h3>
+                <h3 id="remainingLife" class="result-text"></h3>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 生まれてからの日数 & 星座 & 次の記念日を計算
+function calculateDays() {
+    // 星座リスト（開始日と終了日を定義）
+    const zodiacSigns = [
+        { name: "♒ 水瓶座", start: [1, 20], end: [2, 18] },
+        { name: "♓ 魚座", start: [2, 19], end: [3, 20] },
+        { name: "♈ 牡羊座", start: [3, 21], end: [4, 19] },
+        { name: "♉ 牡牛座", start: [4, 20], end: [5, 20] },
+        { name: "♊ 双子座", start: [5, 21], end: [6, 21] },
+        { name: "♋ 蟹座", start: [6, 22], end: [7, 22] },
+        { name: "♌ 獅子座", start: [7, 23], end: [8, 22] },
+        { name: "♍ 乙女座", start: [8, 23], end: [9, 22] },
+        { name: "♎ 天秤座", start: [9, 23], end: [10, 23] },
+        { name: "♏ 蠍座", start: [10, 24], end: [11, 22] },
+        { name: "♐ 射手座", start: [11, 23], end: [12, 21] },
+        { name: "♑ 山羊座", start: [12, 22], end: [1, 19] }
+    ];
+
+    // 星座を取得する関数
+    function getZodiac(month, day) {
+        return zodiacSigns.find(z =>
+            (month === z.start[0] && day >= z.start[1]) ||
+            (month === z.end[0] && day <= z.end[1])
+        )?.name || "不明";
+    }
+
+    // 次の記念日（1000日ごとの節目）を計算する関数
+    function getNextMilestone(days) {
+        const nextMilestone = Math.ceil(days / 1000) * 1000;
+        const daysUntilNext = nextMilestone - days;
+        const today = new Date();
+        const nextMilestoneDate = new Date(today);
+        nextMilestoneDate.setDate(today.getDate() + daysUntilNext);
+
+        return {
+            milestone: nextMilestone,
+            daysUntil: daysUntilNext,
+            date: `${nextMilestoneDate.getFullYear()}年${nextMilestoneDate.getMonth() + 1}月${nextMilestoneDate.getDate()}日`
+        };
+    }
+
+    // 数値をカンマ区切りで表示する関数
+    function formatNumber(number) {
+        return number.toLocaleString();
+    }
+
+    // 次の誕生日までの日数を計算する関数
+    function getNextBirthday(birthDate) {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        let nextBirthday = new Date(birthDate);
+        nextBirthday.setFullYear(currentYear);
+
+        // 今年の誕生日が過ぎていたら来年に設定
+        if (today > nextBirthday) {
+            nextBirthday.setFullYear(currentYear + 1);
+        }
+
+        return Math.floor((nextBirthday - today) / (1000 * 60 * 60 * 24));
+    }
+
+    // 日本人の平均寿命を取得する関数
+    function getAverageLifeExpectancy(gender) {
+        const maleLifeExpectancy = 81; // 男性の平均寿命
+        const femaleLifeExpectancy = 87; // 女性の平均寿命
+        return gender === "male" ? maleLifeExpectancy : femaleLifeExpectancy;
+    }
+
+    // 入力値の取得
+    const name = document.getElementById("userName").value.trim();
+    const birthDate = new Date(document.getElementById("birthDate").value);
+    const today = new Date();
+
+    // 入力チェック（名前が未入力の場合）
+    if (!name) {
+        alert("名前を入力してください！");
+        return;
+    }
+    // 入力チェック（生年月日が未入力の場合）
+    if (!birthDate.getTime()) {
+        alert("生年月日を入力してください！");
+        return;
+    }
+
+    // 生まれてからの日数を計算
+    const daysSinceBirth = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+
+    // 星座を取得
+    const zodiacSign = getZodiac(birthDate.getMonth() + 1, birthDate.getDate());
+
+    // 次の1000日ごとの記念日を計算
+    const nextMilestone = getNextMilestone(daysSinceBirth);
+
+    // 次の誕生日までの日数を計算
+    const daysUntilNextBirthday = getNextBirthday(birthDate);
+
+    // 性別の取得（ラジオボタン）
+    const gender = document.querySelector('input[name="gender"]:checked')?.value;
+
+    // 性別が未選択の場合
+    if (!gender) {
+        alert("性別を選択してください！");
+        return;
+    }
+
+    // 残りの寿命を計算（日本の平均寿命との差分）
+    const lifeExpectancy = getAverageLifeExpectancy(gender);
+    const remainingLifeDays = (lifeExpectancy * 365) - daysSinceBirth;
+    const remainingLifeDate = new Date(today);
+    remainingLifeDate.setDate(today.getDate() + remainingLifeDays);
+
+    // 誕生日メッセージの表示
+    let birthdayMessage = "";
+    if (today.getMonth() === birthDate.getMonth() && today.getDate() === birthDate.getDate()) {
+        birthdayMessage = `🎉 お誕生日おめでとうございます！`;
+    }
+
+    // 結果をHTMLに反映
+    document.getElementById("birthdayMessage").textContent = birthdayMessage;
+    document.getElementById("result").textContent = `${name}さん（${zodiacSign}）は、生まれてから今日で${formatNumber(daysSinceBirth)}日目です。`;
+    document.getElementById("nextBirthday").textContent = `📅 次の誕生日まで: ${daysUntilNextBirthday}日`;
+    document.getElementById("nextMilestone").textContent = `💐 次の記念日 ${nextMilestone.milestone}日は${nextMilestone.daysUntil}日後 (${nextMilestone.date}）`;
+    document.getElementById("remainingLife").textContent = `👼 寿命目安: 約${formatNumber(remainingLifeDays)}日（${remainingLifeDate.getFullYear()}年${remainingLifeDate.getMonth() + 1}月${remainingLifeDate.getDate()}日）です。１日を大切に！`;
+
+
+}
+
+    </script>
+</body>
+
+</html>
